@@ -1,17 +1,16 @@
-const abbrev = require('../')
-const t = require('tap')
+const abbrev = require('abbrev')
+const t = require('node:test')
+const assert = require('assert');
 const util = require('util')
 
 function test (list, expect) {
-  let actual = abbrev(list)
-  t.same(actual, expect,
-    'abbrev(' + util.inspect(list) + ') === ' + util.inspect(expect) + '\n' +
-    'actual: ' + util.inspect(actual))
+  t.test(() => {
+    let actual = abbrev(list);
+    assert.deepStrictEqual(actual, expect);
 
-  actual = abbrev(...list)
-  t.same(abbrev(...list), expect,
-    'abbrev(' + list.map(JSON.stringify).join(',') + ') === ' + util.inspect(expect) + '\n' +
-    'actual: ' + util.inspect(actual))
+    actual = abbrev(...list);
+    assert.deepStrictEqual(actual, expect);
+  });
 }
 
 test(['ruby', 'ruby', 'rules', 'rules', 'rules'],
@@ -50,5 +49,5 @@ test(['a', 'ab', 'abc', 'abcd', 'abcde', 'acde'].reverse(),
     acde: 'acde',
   })
 
-t.notOk([].abbrev)
-t.notOk({}.abbrev)
+t.test(() => assert(![].abbrev))
+t.test(() => assert(!{}.abbrev))
